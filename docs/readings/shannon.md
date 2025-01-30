@@ -60,4 +60,71 @@ A strategy is the process of choosing a move given a position. In theory of game
 Both are quite bad strategies, we need to find a tolerably good strategy for selecting the move to be made.
 
 ## Approximate Evaluating Functions
-- To be continued =D
+
+We can`t find a perfect evaluation function but we do evaluate positions all the time as players. The better the player the better the evaluation the player does.
+
+*Assertions* on positions can be used as maxims and principles. What are these assertions? 
+- Relative values between the pices, Q, R, B, K, P are 9, 5, 3, 3, 1.
+- Rooks should be on open files, this is a 'mobility' score, if other things are equal, the side with more mobility should be stronger
+- Backward, isolated and doubled pawns are weak
+- An exposed king is a weakness ( what is an exposed king? ) 
+
+These assertions are only generalizations on *empirical evidence of numerous games*, they only have some kind of statistical validity. Things can get messy in chess.
+
+Example evaluation function: 
+
+
+f(P) = 200(K-K') + 9(Q-Q') + 5(R-R') + 3(B-B'+N-N') + (P-P') - 0.5(D-D'+S-S'+I-I') + 0.1(M-M') +...
+
+- K,Q,R,B,B,P are the number of White kings, queens, rooks, bishops, knights
+ and pawns on the board
+- D,S,I are doubled, backward and isolated White pawns
+- M= White mobility (measured, say, as the number of legal moves available to
+ White).
+- Primed letters are the similar quantities for Black
+
+The coefficients 0.5 and 0.1 are an estimate of ours as is everything else. Many more terms may be included.
+There is an interesting aspect of having f(P) being more or less continuous. For 'perfect' players with perfect evaluation functions there are only three possible results {-1, 0, 1}. This can somehow indicate how big the advantage may be for any side.
+
+For perfect evaluators the game goes one of three ways:
+- (1)Mr. A says, "I resign" or
+- (2)Mr. B says, "I resign" or
+- (3)Mr. A says, "I offer a draw," and Mr. B replies, "I accept."
+
+## STRATEGY BASED ON AN EVALUATION FUNCTION
+
+The evaluation in itself can't help us much, we need an stratey. Consider the following: 
+
+A queen capture will make me a queen up, however, the opponent will capture my queen after I capture its. Evaluating a single position is not enough. At least not enough with such an imperfect evaluation function.
+
+This exists with as humans playing. We have variations. We investigate move by move on some chains of moves that make sense for us and we somehow choose the best variation we can find. We shall describe mathematically.
+Lets define a *strategy of play* based on f(P).
+
+How to go one step deeper?
+Let M1, M2, M3, ... Ms be the moves that can beb made in position P. M1P, M2P, ... denote simbolically the resulting positions when M1, M2, ... are applied to P. One chooses Mm which maximizes f(MmP)
+
+If Mi be the move chosen my White, then, black will play a move based on this move. Black has Mi1, Mi2, ..., Mis possible answers for Mi, Black plays to minimize f(P).
+Mi is played by White, then Mij is played by Black such that f(MijMiP) is a minimum.
+
+min f(Mij MiP) 
+Mij
+
+White has to play to maximize on Mi the quantity min(f(MijMiP)) that comes as the response of black.
+So, maximize so that a minimum is less low. How crazy is that.
+
+Similarly we can go for a two-move strategy
+
+max	min	max	min	f(Mijkl Mijk Mij MiP)
+Mi	Mij	Mijk  	Mijkl
+
+This represents what to maximize and what to minimize.
+We maximize M1P f(MiP), then minimize f(MijMiP), 
+then maximize f(MijkMijMiP), then minimize f(MijklMijkMijMiP)
+This order is important since the choices of moves occur in definite order. (What is a definite order?)
+
+
+This will be called type A strategy and we shall study how to program it next.
+
+
+## 5. PROGRAMMING A GENERAL PURPOSE COMPUTER FOR A TYPE A STRATEGY
+
