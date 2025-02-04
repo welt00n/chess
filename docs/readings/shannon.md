@@ -128,3 +128,80 @@ This will be called type A strategy and we shall study how to program it next.
 
 ## 5. PROGRAMMING A GENERAL PURPOSE COMPUTER FOR A TYPE A STRATEGY
 
+Properties of the digital computer:
+He describes how a computer should work, having a memory to store say 10 digit numbers, operations such addition and multiplication between numbers stored in these locations and if conditions to control flow of operations.
+Our problem is to represent chess as numbers and operations on number so that we can reduce the strategy to a sequence of computer orders. He will not carry the implementation in detail, only outline the program, what is great for me.
+
+He says it would be ideal to have a chess computer, one that works for chess, but since it may be quite expensive, we shall work witht he ones that are being constructed, it is, the general purpose computers. Cool, this ideal chess computer, isn't this what a neural network is? a computer?
+
+A game of chess has phases, early, middle and endgame. The early game has a focus on developing pieces to good positions and lasts about 10 moves. The middle game has tactics and combinations and lasts until most of the pieces are exchanged, a few pawns and one or two pieces left on each side. The end game is mainly about pawn promotion , timing, zugzweang, stalemates, etc... Resulting, we should have different programs for different phases of the game. Here, we shall be chiefly concerned with the middle game and will leave the end game. 
+
+A square can be occupied in  13 different ways, 0 for empty, 6 for white and 6 for black pieces.
+64 squares and need to represent a  board, a total of 256 bits. It is not the best encoding but it is good for calculation.
+There shall be one more number (lambda) for representing if it the current move is Black's or White's. More memory could be used to store casting privileges(where thie or black kings and rooks have moved) and en passant captures (statement of the last move). These will be neglected by now.
+
+This notation gives us this starting position:
+4, 2, 3, 5, 6, 3, 2, 4; 
+1, 1, 1, 1, 1, 1, 1, 1; 
+0, 0, 0, 0, 0, 0, 0, 0;
+0, 0, 0, 0, 0, 0, 0, 0; 
+0, 0, 0, 0, 0, 0, 0, 0; 
+0, 0, 0, 0, 0, 0, 0, 0;
+-1, -1, -1, -1, -1, -1, -1, -1;
+-4, -2, -3, -5, -6, -3, -2, -4;
++1 (=lambda)
+
+Normal moves can be specified with initial and final squared. e4 is 1,4;3,4. Pawn promotion one more digit for the piece that the pawn becomes. Castlings uses two symbols, when kings moves two/three squares. A move hence is a triple (a, b, c), a, b initial and final positions and c is a piece to get from a promotion.
+
+Now, let's define some subprograms. He defines 10 subprograms:
+- T0 = Makes move (a, b, c) in position P to obtain the resulting position.
+- T1 = Makes a list of the possible moves of a pawn at square (x, y) in position P.
+- T2, ..., T6 = Similarly for other types of pieces: knight, bishop, rook, queen and
+ king.
+- T7 = Makes list of all possible moves in a given position.
+- T8 = Calculates the evaluating function f(P) for a given position P.
+- T9 = Master program; performs maximizing and minimizing calculation to
+ determine proper move.
+
+
+T0: This is basically how to perform the move operation in a position.
+
+(1) The square corresponding to number a in the position is located in the position
+ memory.
+
+(2) The number in this square x is extracted and replaced by 0 (empty).
+
+(3) If x=1, and the first co-ordinate of a is 6 (White pawn being promoted) or if x=
+1 and the first co-ordinate of a is 1 (Black pawn being promoted), the number c
+ is placed in square b (replacing whatever was there).
+ If x=6 and a-b=2 (White castles, king side) 0 is placed in squares 04 and 07 and
+ 6 and 4 in squares 06 and 05, respectively. Similarly for the cases x=6, b-a=2
+ (White castles, queen side) and x=-6, a-b=+-2 (Black castles, king or queen
+ side).
+ In all other cases, x is placed in square b.
+
+(4) The sign of lambda is changed.
+
+
+Each piece type will have its program to determine its possible moves. Let's check T3, the example of a bishop.
+
+T3: The bishop's moves
+
+(1) Construct (x+1,y+1) and read the contents u of this square in the position P. 
+
+(2) If u=0 (empty) list the move (x, y), (x+1,y+1) and start over with (x+2,y+2)
+ instead of (x+1,y+1).
+
+If lambda*u is positive (own piece in the square) continue to 3.
+
+If lambda*u is negative (opponent's piece in the square) list the move and continue to 3.
+
+If the square does not exist continue to 3.
+
+(3) Construct (x+1,y-1) and perform similar calculation.
+
+(4) Similarly with (x-1,y+1).
+
+(5) Similarly with (x-1,y-1).
+
+
