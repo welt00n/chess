@@ -205,3 +205,20 @@ If the square does not exist continue to 3.
 (5) Similarly with (x-1,y-1).
 
 
+This example is cool, but there is lots to improve. One example is using combinations, he basically say we can break possible moves in groups of moves. A queen could use the moves of a rook + the moves of a bishop. The goal probably of making calculations simpler.
+
+## T7: Making a list of possible moves
+
+- (1) Start at square 1,1 and extract contents x.
+
+- (2) If lambda*x is positive start corresponding piece program Tx and when
+ complete return to (1) adding 1 to square number. If lambda8x is zero or
+ negative, return to 1 to square number.
+
+- (3) Test each of the listed moves for legality and discard those which are illegal.
+ This is done by making each of the moves in the position P (by program T0) and
+ examining whether it leaves the king in check.
+
+This makes random play viable, but it's bad.
+
+## T8: 
