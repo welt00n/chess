@@ -13,6 +13,7 @@ const kafka_client = new Kafka({
   brokers: (process.env.KAFKA_BROKERS || 'localhost:9092').split(',')
 });
 let producer: Producer;
+
 export const kafka = {
   connect: async () => {
     producer = kafka_client.producer();
@@ -22,6 +23,7 @@ export const kafka = {
     await producer?.disconnect();
   },
   sendEvent: async (event: GameEvent) => {
+    await kafka.connect()
     const payload = {
       game_id: event.game_id,
       event_type: event.event_type,
@@ -38,5 +40,6 @@ export const kafka = {
         value: JSON.stringify(payload)
       }]
     });
+    await kafka.disconnect()
   }
 };
