@@ -7,4 +7,10 @@ The frontend is a NextJs app that will get the history of games and evaluations 
 
 It will all work from a docker-compose.yml file. I usually build stuff in the Ubuntu directly but I want to practice containerization since all be working in the cloud.
 
+...
 
+docker exec -it kafka kafka-topics --create --topic chess-events --partitions 3 --replication-factor 1 --bootstrap-server localhost:9092
+
+docker exec -it 6eae07ce324b kafka-topics --describe --topic chess-events --bootstrap-server kafka:9092
+
+docker logs chess-go-kafka-1 --follow
